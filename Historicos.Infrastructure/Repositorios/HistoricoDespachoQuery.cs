@@ -35,8 +35,18 @@ namespace Historicos.Infrastructure.Repositorios
 
         public async Task<List<PedidoRetrasadoDto>> ObtenerPedidosRetrasados(DateTime fechaCorte)
         {
-            var query = new QueryDefinition("SELECT c.numeroSerie, c.fechaEsperada, c.fechaFin AS FechaReal, c.estadoNuevo AS EstadoFinal FROM c WHERE c.fechaFin > c.fechaEsperada AND c.fechaEsperada < @fechaCorte")
-                .WithParameter("@fechaCorte", fechaCorte);
+            //var query = new QueryDefinition("SELECT c.numeroSerie, c.fechaEsperada, c.fechaFin AS FechaReal, c.estadoNuevo AS EstadoFinal FROM c WHERE c.fechaFin > c.fechaEsperada AND c.fechaEsperada < @fechaCorte")
+
+            var fechaCorteExclusiva = fechaCorte.Date.AddDays(1);
+
+            var query = new QueryDefinition(@"SELECT 
+                                c.numeroSerie, 
+                                c.fechaFin AS FechaReal, 
+                                c.estadoNuevo AS EstadoFinal 
+                            FROM c
+                            WHERE c.fechaFin > @fechaCorteExclusiva")
+            .WithParameter("@fechaCorteExclusiva", fechaCorteExclusiva);
+
             var iterator = _container.GetItemQueryIterator<PedidoRetrasadoDto>(query);
             var resultados = new List<PedidoRetrasadoDto>();
             while (iterator.HasMoreResults) resultados.AddRange(await iterator.ReadNextAsync());
