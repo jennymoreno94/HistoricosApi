@@ -14,10 +14,9 @@ namespace Historicos.Infrastructure.Repositorios
             _container = client.GetContainer(config["CosmosDb:Database"], config["CosmosDb:ContainerDespachos"]);
         }
 
-        public async Task<List<EstadoHistoricoDto>> ObtenerHistorialPorNumeroSerie(string numeroSerie)
+        public async Task<List<EstadoHistoricoDto>> ObtenerHistoricos()
         {
-            var query = new QueryDefinition("SELECT c.numeroSerie, c.estadoAnterior, c.estadoNuevo, c.fechaInicio AS FechaCambio, c.ruta, c.ciudad FROM c WHERE c.numeroSerie = @numeroSerie ORDER BY c.fechaInicio")
-                .WithParameter("@numeroSerie", numeroSerie);
+            var query = new QueryDefinition("SELECT c.numeroSerie, c.estadoAnterior, c.estadoNuevo, c.fechaInicio AS FechaCambio, c.ruta, c.ciudad FROM c  ORDER BY c.fechaInicio");
             var iterator = _container.GetItemQueryIterator<EstadoHistoricoDto>(query);
             var resultados = new List<EstadoHistoricoDto>();
             while (iterator.HasMoreResults) resultados.AddRange(await iterator.ReadNextAsync());
@@ -33,20 +32,15 @@ namespace Historicos.Infrastructure.Repositorios
             return resultados;
         }
 
-        public async Task<List<PedidoRetrasadoDto>> ObtenerPedidosRetrasados(DateTime fechaCorte)
+        public async Task<List<PedidoRetrasadoDto>> ObtenerPedidosRetrasados()
         {
             //var query = new QueryDefinition("SELECT c.numeroSerie, c.fechaEsperada, c.fechaFin AS FechaReal, c.estadoNuevo AS EstadoFinal FROM c WHERE c.fechaFin > c.fechaEsperada AND c.fechaEsperada < @fechaCorte")
-
-            var fechaCorteExclusiva = fechaCorte.Date.AddDays(1);
-
             var query = new QueryDefinition(@"SELECT 
                                 c.numeroSerie, 
                                 c.fechaFin AS FechaReal, 
                                 c.estadoNuevo AS EstadoFinal 
-                            FROM c
-                            WHERE c.fechaFin > @fechaCorteExclusiva")
-            .WithParameter("@fechaCorteExclusiva", fechaCorteExclusiva);
-
+                            FROM c");
+          
             var iterator = _container.GetItemQueryIterator<PedidoRetrasadoDto>(query);
             var resultados = new List<PedidoRetrasadoDto>();
             while (iterator.HasMoreResults) resultados.AddRange(await iterator.ReadNextAsync());

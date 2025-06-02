@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<ObtenerHistorialPorNumeroSerie>();
+builder.Services.AddScoped<ObtenerHistoricos>();
 builder.Services.AddScoped<ObtenerProblemasRecurrentes>();
 builder.Services.AddScoped<ObtenerTiemposPromedioEtapas>();
 builder.Services.AddScoped<ObtenerPedidosRetrasados>();
@@ -33,6 +33,19 @@ builder.Services.AddSingleton(sp =>
         ConnectionMode = ConnectionMode.Direct   
     });
 });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirTodos", policy =>
+    {
+        policy
+            .AllowAnyOrigin() 
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+
 
 // Configuración de Kestrel para .NET 7
 builder.WebHost.ConfigureKestrel(options =>
@@ -56,10 +69,13 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
+app.UseCors("PermitirTodos");
+
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
 
 

@@ -4,7 +4,7 @@ namespace Historicos.Application.Interfaces
 {
     public interface IHistoricoNovedadQuery
     {
-        Task<List<ProblemaRecurrenteDto>> ObtenerProblemasRecurrentes(int top);
+        Task<List<ProblemaRecurrenteDto>> ObtenerProblemasRecurrentes();
 
     }
 }

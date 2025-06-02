@@ -13,7 +13,7 @@ namespace Historicos.Infrastructure.Repositorios
             _container = client.GetContainer(config["CosmosDb:Database"], config["CosmosDb:ContainerNovedades"]);
         }
 
-        public async Task<List<ProblemaRecurrenteDto>> ObtenerProblemasRecurrentes(int top)
+        public async Task<List<ProblemaRecurrenteDto>> ObtenerProblemasRecurrentes()
         {
             var query = new QueryDefinition("SELECT  c.tipoNovedad, COUNT(1) AS Cantidad FROM c GROUP BY c.tipoNovedad");
             var iterator = _container.GetItemQueryIterator<ProblemaRecurrenteDto>(query);
@@ -21,7 +21,6 @@ namespace Historicos.Infrastructure.Repositorios
             while (iterator.HasMoreResults) resultados.AddRange(await iterator.ReadNextAsync());
             return resultados
             .OrderByDescending(r => r.Cantidad)
-            .Take(top)
             .ToList();
         }
     }

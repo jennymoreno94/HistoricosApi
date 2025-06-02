@@ -4,8 +4,8 @@ namespace Historicos.Application.Interfaces
 {
     public interface IHistoricoDespachoQuery
     {
-        Task<List<EstadoHistoricoDto>> ObtenerHistorialPorNumeroSerie(string numeroSerie);
+        Task<List<EstadoHistoricoDto>> ObtenerHistoricos();
         Task<List<TiempoEtapaDto>> CalcularTiemposPromedio();
-        Task<List<PedidoRetrasadoDto>> ObtenerPedidosRetrasados(DateTime fechaCorte);
+        Task<List<PedidoRetrasadoDto>> ObtenerPedidosRetrasados();
     }
 }

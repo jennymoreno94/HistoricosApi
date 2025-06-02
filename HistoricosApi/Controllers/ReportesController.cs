@@ -7,14 +7,14 @@ namespace HistoricosApi.Controllers
     [Route("api/reportes")]
     public class ReportesController : ControllerBase
     {
-        private readonly ObtenerHistorialPorNumeroSerie _estados;
+        private readonly ObtenerHistoricos _estados;
         private readonly ObtenerProblemasRecurrentes _problemas;
         private readonly ObtenerTiemposPromedioEtapas _tiempos;
         private readonly ObtenerPedidosRetrasados _retrasos;
 
         private readonly ILogger<ReportesController> _logger;
 
-        public ReportesController(ObtenerHistorialPorNumeroSerie estados,
+        public ReportesController(ObtenerHistoricos estados,
                                   ObtenerProblemasRecurrentes problemas,
                                   ObtenerTiemposPromedioEtapas tiempos,
                                   ObtenerPedidosRetrasados retrasos,
@@ -29,17 +29,17 @@ namespace HistoricosApi.Controllers
 
         }
 
-        [HttpGet(Name = "estados-por-pedido/{numeroSerie}")]
-        public async Task<IActionResult> GetEstados(string numeroSerie) => Ok(await _estados.Ejecutar(numeroSerie));
+        [HttpGet("historicos")]
+        public async Task<IActionResult> GetHistoricos() => Ok(await _estados.Ejecutar());
 
         [HttpGet("problemas-recurrentes")]
-        public async Task<IActionResult> GetProblemas([FromQuery] int top = 5) => Ok(await _problemas.Ejecutar(top));
+        public async Task<IActionResult> GetProblemas() => Ok(await _problemas.Ejecutar());
 
         [HttpGet("tiempos-promedio")]
         public async Task<IActionResult> GetTiempos() => Ok(await _tiempos.Ejecutar());
 
         [HttpGet("pedidos-retrasados")]
-        public async Task<IActionResult> GetRetrasos([FromQuery] DateTime fechaCorte) => Ok(await _retrasos.Ejecutar(fechaCorte));
+        public async Task<IActionResult> GetRetrasos() => Ok(await _retrasos.Ejecutar());
 
 
         /*public ReportesController(ILogger<ReportesController> logger)

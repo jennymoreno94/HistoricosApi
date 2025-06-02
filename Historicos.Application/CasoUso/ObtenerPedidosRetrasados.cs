@@ -8,6 +8,6 @@ namespace Historicos.Application.CasoUso
         private readonly IHistoricoDespachoQuery _repository;
         public ObtenerPedidosRetrasados(IHistoricoDespachoQuery repository) => _repository = repository;
 
-        public Task<List<PedidoRetrasadoDto>> Ejecutar(DateTime fechaCorte) => _repository.ObtenerPedidosRetrasados(fechaCorte);
+        public Task<List<PedidoRetrasadoDto>> Ejecutar() => _repository.ObtenerPedidosRetrasados();
     }
 }

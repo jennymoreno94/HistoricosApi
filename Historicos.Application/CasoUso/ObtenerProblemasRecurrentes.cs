@@ -8,6 +8,6 @@ namespace Historicos.Application.CasoUso
         private readonly IHistoricoNovedadQuery _repository;
         public ObtenerProblemasRecurrentes(IHistoricoNovedadQuery repository) => _repository = repository;
 
-        public Task<List<ProblemaRecurrenteDto>> Ejecutar(int top) => _repository.ObtenerProblemasRecurrentes(top);
+        public Task<List<ProblemaRecurrenteDto>> Ejecutar() => _repository.ObtenerProblemasRecurrentes();
     }
 }
