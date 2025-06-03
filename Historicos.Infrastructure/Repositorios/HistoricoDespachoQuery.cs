@@ -16,7 +16,7 @@ namespace Historicos.Infrastructure.Repositorios
 
         public async Task<List<Historico>> ObtenerHistoricos()
         {
-            var query = new QueryDefinition("SELECT c.numeroSerie, c.estadoAnterior, c.estadoNuevo, c.fechaInicio, c.fechaFin, c.ruta, c.ciudad FROM c  ORDER BY c.fechaInicio");
+            var query = new QueryDefinition("SELECT c.id, c.numeroSerie, c.estadoAnterior, c.estadoNuevo, c.fechaInicio, c.fechaFin, c.ruta, c.ciudad FROM c  ORDER BY c.fechaInicio");
             var iterator = _container.GetItemQueryIterator<Historico>(query);
             var resultados = new List<Historico>();
             while (iterator.HasMoreResults)
@@ -24,6 +24,7 @@ namespace Historicos.Infrastructure.Repositorios
                 var batch = await iterator.ReadNextAsync();
                 resultados.AddRange(batch.Select(dto =>
                     new Historico(
+                        dto.Id,
                         dto.NumeroSerie,
                         dto.EstadoAnterior,
                         dto.EstadoNuevo,
