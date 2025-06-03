@@ -5,9 +5,17 @@ namespace Historicos.Application.CasoUso
 {
     public class ObtenerHistoricos
     {
-        private readonly IHistoricoDespachoQuery _repository;
-        public ObtenerHistoricos(IHistoricoDespachoQuery repository) => _repository = repository;
+        private readonly IHistoricoDespachoQuery _query;
 
-        public Task<List<EstadoHistoricoDto>> Ejecutar() => _repository.ObtenerHistoricos();
+        public ObtenerHistoricos(IHistoricoDespachoQuery query)
+        {
+            _query = query;
+        }
+
+        public async Task<IEnumerable<HistoricoDto>> Ejecutar()
+        {
+            var historicos = await _query.ObtenerHistoricos();
+            return historicos.Select(HistoricoDto.FromDomain);
+        }
     }
 }

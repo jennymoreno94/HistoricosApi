@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Historicos.Domain\Historicos.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

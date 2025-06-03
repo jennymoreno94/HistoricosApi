@@ -1,8 +1,8 @@
 ﻿using Historicos.Application.DTOs;
 using Historicos.Application.Interfaces;
+using Historicos.Domain.Entitidades;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
-
 
 namespace Historicos.Infrastructure.Repositorios
 {
@@ -14,12 +14,25 @@ namespace Historicos.Infrastructure.Repositorios
             _container = client.GetContainer(config["CosmosDb:Database"], config["CosmosDb:ContainerDespachos"]);
         }
 
-        public async Task<List<EstadoHistoricoDto>> ObtenerHistoricos()
+        public async Task<List<Historico>> ObtenerHistoricos()
         {
-            var query = new QueryDefinition("SELECT c.numeroSerie, c.estadoAnterior, c.estadoNuevo, c.fechaInicio AS FechaCambio, c.ruta, c.ciudad FROM c  ORDER BY c.fechaInicio");
-            var iterator = _container.GetItemQueryIterator<EstadoHistoricoDto>(query);
-            var resultados = new List<EstadoHistoricoDto>();
-            while (iterator.HasMoreResults) resultados.AddRange(await iterator.ReadNextAsync());
+            var query = new QueryDefinition("SELECT c.numeroSerie, c.estadoAnterior, c.estadoNuevo, c.fechaInicio, c.fechaFin, c.ruta, c.ciudad FROM c  ORDER BY c.fechaInicio");
+            var iterator = _container.GetItemQueryIterator<Historico>(query);
+            var resultados = new List<Historico>();
+            while (iterator.HasMoreResults)
+            {
+                var batch = await iterator.ReadNextAsync();
+                resultados.AddRange(batch.Select(dto =>
+                    new Historico(
+                        dto.NumeroSerie,
+                        dto.EstadoAnterior,
+                        dto.EstadoNuevo,
+                        dto.FechaInicio,
+                        dto.FechaFin,
+                        dto.Ruta,
+                        dto.Ciudad
+                    )));
+            }
             return resultados;
         }
 
@@ -34,17 +47,17 @@ namespace Historicos.Infrastructure.Repositorios
 
         public async Task<List<PedidoRetrasadoDto>> ObtenerPedidosRetrasados()
         {
-            //var query = new QueryDefinition("SELECT c.numeroSerie, c.fechaEsperada, c.fechaFin AS FechaReal, c.estadoNuevo AS EstadoFinal FROM c WHERE c.fechaFin > c.fechaEsperada AND c.fechaEsperada < @fechaCorte")
             var query = new QueryDefinition(@"SELECT 
                                 c.numeroSerie, 
                                 c.fechaFin AS FechaReal, 
                                 c.estadoNuevo AS EstadoFinal 
                             FROM c");
-          
             var iterator = _container.GetItemQueryIterator<PedidoRetrasadoDto>(query);
             var resultados = new List<PedidoRetrasadoDto>();
             while (iterator.HasMoreResults) resultados.AddRange(await iterator.ReadNextAsync());
             return resultados;
         }
+
     }
 }
+    
