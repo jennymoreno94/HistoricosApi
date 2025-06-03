@@ -8,7 +8,8 @@ namespace Historicos.Application.DTOs
         public string NumeroSerie { get; set; }
         public string EstadoAnterior { get; set; }
         public string EstadoNuevo { get; set; }
-        public DateTime FechaInicio { get; set; }
+        public DateTime? FechaInicio { get; set; }
+        public DateTime? FechaFin { get; set; }
         public string Ruta { get; set; }
         public string Ciudad { get; set; }
 
@@ -21,6 +22,7 @@ namespace Historicos.Application.DTOs
                 EstadoAnterior = historico.EstadoAnterior,
                 EstadoNuevo = historico.EstadoNuevo,
                 FechaInicio = historico.FechaInicio,
+                FechaFin = historico.FechaFin,
                 Ruta = historico.Ruta,
                 Ciudad = historico.Ciudad
             };
